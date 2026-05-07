@@ -1,5 +1,5 @@
 // Eski .env değişkenini tamamen sildik, sadece bu kalacak:
-const API_URL = "http://https://talenapp-core.onrender.com/api/posts";
+const API_URL = "https://talenapp-core.onrender.com/api/posts";
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('token');

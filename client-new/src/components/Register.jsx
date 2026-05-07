@@ -43,7 +43,7 @@ const Register = ({ onLogin }) => { // onLogin prop'unu ekledik ki Google ile gi
     setError('');
     setIsSubmitting(true);
     try {
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://https://talenapp-core.onrender.com'}/api/auth/verify-email`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://talenapp-core.onrender.com'}/api/auth/verify-email`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({ email, code: otpCode })
@@ -74,7 +74,7 @@ const Register = ({ onLogin }) => { // onLogin prop'unu ekledik ki Google ile gi
       const user = result.user;
 
       // Google'dan dönen verileri Backend'e yolla
-      const response = await fetch(`${import.meta.env.VITE_API_URL || 'http://https://talenapp-core.onrender.com'}/api/auth/google`, {
+      const response = await fetch(`${import.meta.env.VITE_API_URL || 'https://talenapp-core.onrender.com'}/api/auth/google`, {
         method: 'POST',
         headers: { 'Content-Type': 'application/json' },
         body: JSON.stringify({

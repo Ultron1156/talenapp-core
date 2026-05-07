@@ -1,8 +1,8 @@
 import { auth } from '../firebase';
 import { signInWithCustomToken } from 'firebase/auth';
 
-const API_URL = "http://https://talenapp-core.onrender.com/api/users";
-const GAME_API_URL = "http://https://talenapp-core.onrender.com/api/games";
+const API_URL = "https://talenapp-core.onrender.com/api/users";
+const GAME_API_URL = "https://talenapp-core.onrender.com/api/games";
 
 const getAuthHeader = () => {
     const token = localStorage.getItem('token');

@@ -1,4 +1,4 @@
-const API_URL = "http://https://talenapp-core.onrender.com/api/auth";
+const API_URL = "https://talenapp-core.onrender.com/api/auth";
 
 const register = async (username, email, password) => {
     const response = await fetch(`${API_URL}/register`, {
