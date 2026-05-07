@@ -1,0 +1,14 @@
+# Dependency directories
+node_modules/
+
+# Gizli Sırlar (En önemlisi!)
+.env
+
+# Log files
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+
+# OS metadata
+.DS_Store
+firebase-service-account.json

@@ -1,0 +1,14 @@
+const WebSocket = require('ws');
+
+const wss = new WebSocket.Server({ port: 8080 });
+
+wss.on('connection', (ws) => {
+  console.log('Bir kullanıcı bağlandı.');
+
+  ws.on('message', (message) => {
+    console.log(`Mesaj alındı: ${message}`);
+  });
+
+  ws.send('Sunucuya bağlandınız!');
+});node server.js
+

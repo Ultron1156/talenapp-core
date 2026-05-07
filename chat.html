@@ -1,0 +1,147 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0"/>
+  <title>Talk&Learn - Chat</title>
+  <style>
+    body {
+      font-family: Arial, sans-serif;
+      margin: 0;
+      padding: 0;
+      background-color: #f0f2f5;
+    }
+    #profile {
+      background: #fff;
+      padding: 1rem;
+      box-shadow: 0 2px 4px rgba(0,0,0,0.1);
+    }
+    #chat-container {
+      display: flex;
+      height: 90vh;
+    }
+    #user-list {
+      width: 25%;
+      background-color: #e4e6eb;
+      padding: 1rem;
+      overflow-y: auto;
+    }
+    #chat-box {
+      flex-grow: 1;
+      padding: 1rem;
+      display: flex;
+      flex-direction: column;
+      background-color: #fff;
+    }
+    #messages {
+      flex-grow: 1;
+      overflow-y: auto;
+      border: 1px solid #ccc;
+      padding: 1rem;
+      margin-bottom: 1rem;
+    }
+    #message-form {
+      display: flex;
+    }
+    #message-input {
+      flex-grow: 1;
+      padding: 0.5rem;
+    }
+    #send-button {
+      padding: 0.5rem 1rem;
+    }
+  </style>
+</head>
+<body>
+
+  <div id="profile">
+    <strong>Logged in as:</strong> <span id="profileUsername">Loading...</span>
+  </div>
+
+  <div id="chat-container">
+    <div id="user-list">
+      <h3>Active Users</h3>
+      <ul id="users"></ul>
+    </div>
+
+    <div id="chat-box">
+      <div id="messages"></div>
+      <form id="message-form">
+        <input type="text" id="message-input" placeholder="Type your message..." autocomplete="off" required />
+        <button type="submit" id="send-button">Send</button>
+      </form>
+    </div>
+  </div>
+
+  <script>
+    const userID = localStorage.getItem('userID') || Math.random().toString(36).substr(2, 9);
+    const username = localStorage.getItem('username') || prompt("Enter your username:");
+    localStorage.setItem('userID', userID);
+    localStorage.setItem('username', username);
+
+    document.getElementById('profileUsername').textContent = username;
+
+    const socket = new WebSocket("ws://localhost:8081");
+
+    let selectedUserID = null;
+
+    socket.addEventListener("open", () => {
+      socket.send(JSON.stringify({
+        type: "init",
+        userID,
+        username
+      }));
+    });
+
+    socket.addEventListener("message", (event) => {
+      const data = JSON.parse(event.data);
+
+      if (data.type === "userList") {
+        const userListEl = document.getElementById("users");
+        userListEl.innerHTML = "";
+
+        data.users.forEach(user => {
+          if (user.userID !== userID) {
+            const li = document.createElement("li");
+            li.textContent = user.username;
+            li.style.cursor = "pointer";
+            li.onclick = () => {
+              selectedUserID = user.userID;
+              document.getElementById("messages").innerHTML = "";
+            };
+            userListEl.appendChild(li);
+          }
+        });
+      } else if (data.message && data.username) {
+        const msgEl = document.createElement("div");
+        msgEl.textContent = `[${data.timestamp}] ${data.username}: ${data.message}`;
+        document.getElementById("messages").appendChild(msgEl);
+      }
+    });
+
+    document.getElementById("message-form").addEventListener("submit", (e) => {
+      e.preventDefault();
+
+      const message = document.getElementById("message-input").value;
+
+      if (!selectedUserID) {
+        alert("Please select a user to chat with.");
+        return;
+      }
+
+      socket.send(JSON.stringify({
+        type: "message",
+        userID,
+        targetUserID: selectedUserID,
+        message
+      }));
+
+      const msgEl = document.createElement("div");
+      msgEl.textContent = `[${new Date().toLocaleTimeString()}] Me: ${message}`;
+      document.getElementById("messages").appendChild(msgEl);
+
+      document.getElementById("message-input").value = "";
+    });
+  </script>
+</body>
+</html>
