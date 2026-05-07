@@ -20,11 +20,20 @@ const app = express();
 const server = http.createServer(app);
 const wss = new WebSocket.Server({ server });
 
+// --- GÜNCELLENEN VIP GÜVENLİK LİSTESİ (CORS) ---
 const corsOptions = {
-  origin: 'http://localhost:5173',
+  origin: [
+    'http://localhost:5173',
+    'http://localhost:8081',
+    'https://talenapp.com',
+    'https://www.talenapp.com',
+    'https://talenapp-core.vercel.app'
+  ],
+  credentials: true,
   optionsSuccessStatus: 200
 };
 app.use(cors(corsOptions));
+// -----------------------------------------------
 
 app.use(express.json());
 app.use('/uploads', express.static(path.join(__dirname, '/uploads')));
